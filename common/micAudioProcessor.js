@@ -1,7 +1,8 @@
 let micProc;
 
 class MicAudioProcessor {
-  constructor() {
+  constructor(mediaStream) {
+    this.mediaStream = mediaStream;
     micProc = this;
 
     if (window.hasOwnProperty('webkitAudioContext') &&
@@ -29,46 +30,15 @@ class MicAudioProcessor {
     this.data = [];
   }
 
-  getMicPermission() {
-    this.permissionDeferred = $.Deferred();
+  start() {
+    micProc.micSource = micProc.audioContext.createMediaStreamSource(this.mediaStream);
+    micProc.micSource.connect(micProc.downSampleNode);
+    micProc.downSampleNode.connect(micProc.audioContext.destination);
 
-    var successCallback = function (micStream) {
-      console.log('User allowed microphone access.');
-      micProc.micSource = micProc.audioContext.createMediaStreamSource(micStream);
-      micProc.micSource.connect(micProc.downSampleNode);
-      micProc.downSampleNode.connect(micProc.audioContext.destination);
-      visualizer({
-        parent: "#waveform",
-        stream: micStream
-      });
-
-      if (micProc.audioContext.state == "suspended") {
-        // audio context start suspended on Chrome due to auto play policy
-        micProc.audioContext.resume();
-      }
-      micProc.permissionDeferred.resolve();
-    };
-
-    var errorCallback = function (err) {
-      console.log('Initializing microphone has failed. Falling back to default audio file', err);
-      micProc.permissionDeferred.reject();
-    };
-
-    try {
-      navigator.getUserMedia = navigator.webkitGetUserMedia ||
-      navigator.getUserMedia || navigator.mediaDevices.getUserMedia;
-      var constraints = { video: false, audio: true };
-
-      console.log('Asking for permission...');
-
-      navigator.mediaDevices.getUserMedia(constraints)
-      .then(successCallback)
-      .catch(errorCallback);
-    } catch (err) {
-      errorCallback(err);
+    if (micProc.audioContext.state == "suspended") {
+      // audio context start suspended on Chrome due to auto play policy
+      micProc.audioContext.resume();
     }
-
-    return this.permissionDeferred.promise();
   };
 
   initDownSampleNode() {
