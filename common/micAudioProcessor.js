@@ -4,19 +4,6 @@ export default class MicAudioProcessor {
   constructor(mediaStream) {
     this.mediaStream = mediaStream;
 
-    if (window.hasOwnProperty('webkitAudioContext') &&
-    !window.hasOwnProperty('AudioContext')) {
-      window.AudioContext = webkitAudioContext;
-    }
-
-    if (navigator.hasOwnProperty('webkitGetUserMedia') &&
-    !navigator.hasOwnProperty('getUserMedia')) {
-      navigator.getUserMedia = webkitGetUserMedia;
-      if (!AudioContext.prototype.hasOwnProperty('createScriptProcessor')) {
-        AudioContext.prototype.createScriptProcessor = AudioContext.prototype.createJavaScriptNode;
-      }
-    }
-
     this.audioContext = new AudioContext();
 
     this.browserSampleRate = this.audioContext.sampleRate;// 44100
