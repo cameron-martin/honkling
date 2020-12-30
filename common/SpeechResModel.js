@@ -1,5 +1,6 @@
 import { modelConfig, personalizationConfig } from './config';
 import { transpose2d } from './util';
+import * as tf from '@tensorflow/tfjs';
 
 export default class SpeechResModel {
 

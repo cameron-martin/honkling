@@ -15,7 +15,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'lib/tfjs/tf.min.js',
       'lib/meyda.js',
       { pattern: './**/*.test.js', watch: false },
       'common/initWeights.js',
@@ -38,6 +37,13 @@ module.exports = function(config) {
   
     webpack: {
       // Any custom webpack configuration...
+      resolve: {
+        fallback: {
+          "crypto": require.resolve("crypto-browserify"),
+          "buffer": require.resolve("buffer/"),
+          "stream": require.resolve("stream-browserify")
+        }
+      }
     },
 
 
