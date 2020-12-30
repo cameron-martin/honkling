@@ -16,7 +16,6 @@ export default class OfflineAudioProcessor {
     // As a result, 32 ms length of feature is used for each 30 ms window
     // TODO :: bufferSize and mfccDataLength can be dynamic based sampleRate & offlineWindowSize
 
-    this.deferred = $.Deferred();
     this.mfcc = [];
 
     this.audioContext = new OfflineAudioContext(1, config.offlineSampleRate + (this.bufferSize * 20), config.offlineSampleRate);
@@ -65,7 +64,7 @@ export default class OfflineAudioProcessor {
     this.meyda.start("mfcc");
     this.audioSource.start();
 
-    this.audioContext.startRendering().then((renderedBuffer) => {
+    return this.audioContext.startRendering().then((renderedBuffer) => {
       this.meyda.stop();
       this.audioSource.disconnect();
       this.mfcc = this.mfcc.slice(0, this.mfccDataLength);
@@ -75,14 +74,8 @@ export default class OfflineAudioProcessor {
         }
       }
       this.mfcc = transposeFlatten2d(this.mfcc);
-      this.deferred.resolve(this.mfcc);
 
-    }).catch((err) => {
-      console.log('Offline processing failed: ' + err);
-      // Note: The promise should reject when startRendering is called a second time on an OfflineAudioContext
-      this.deferred.reject();
+      return this.mfcc;
     });
-
-    return this.deferred.promise();
   }
 }

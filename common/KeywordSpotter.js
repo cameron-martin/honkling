@@ -14,7 +14,7 @@ export default class KeywordSpotter {
     this.micAudioProcessor.start();
     this.intervalId = setInterval(() => {
       let offlineProcessor = new OfflineAudioProcessor(audioConfig, this.micAudioProcessor.getData());
-      offlineProcessor.getMFCC().done((mfccData) => {
+      offlineProcessor.getMFCC().then((mfccData) => {
         const keyword = predictKeyword(mfccData, this.model, commands);
 
         if(this.onkeyword) {

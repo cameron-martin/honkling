@@ -16,7 +16,6 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'lib/tfjs/tf.min.js',
-      'lib/jquery-3.3.1.min.js',
       'lib/meyda.js',
       { pattern: './**/*.test.js', watch: false },
       'common/initWeights.js',
