@@ -1,11 +1,8 @@
 import { audioConfig } from './config';
 
-let micProc;
-
 export default class MicAudioProcessor {
   constructor(mediaStream) {
     this.mediaStream = mediaStream;
-    micProc = this;
 
     if (window.hasOwnProperty('webkitAudioContext') &&
     !window.hasOwnProperty('AudioContext')) {
@@ -33,13 +30,13 @@ export default class MicAudioProcessor {
   }
 
   start() {
-    micProc.micSource = micProc.audioContext.createMediaStreamSource(this.mediaStream);
-    micProc.micSource.connect(micProc.downSampleNode);
-    micProc.downSampleNode.connect(micProc.audioContext.destination);
+    this.micSource = this.audioContext.createMediaStreamSource(this.mediaStream);
+    this.micSource.connect(this.downSampleNode);
+    this.downSampleNode.connect(this.audioContext.destination);
 
-    if (micProc.audioContext.state == "suspended") {
+    if (this.audioContext.state == "suspended") {
       // audio context start suspended on Chrome due to auto play policy
-      micProc.audioContext.resume();
+      this.audioContext.resume();
     }
   };
 
@@ -66,13 +63,13 @@ export default class MicAudioProcessor {
       return newData;
     }
 
-    this.downSampleNode.onaudioprocess = function(audioProcessingEvent) {
+    this.downSampleNode.onaudioprocess = (audioProcessingEvent) => {
       var inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
-      var downSampledData = interpolateArray(inputData, micProc.downSampledBufferSize);
-      if (micProc.data.length > audioConfig.offlineSampleRate) {
-        micProc.data.splice(0, micProc.downSampledBufferSize);
+      var downSampledData = interpolateArray(inputData, this.downSampledBufferSize);
+      if (this.data.length > audioConfig.offlineSampleRate) {
+        this.data.splice(0, this.downSampledBufferSize);
       }
-      micProc.data = micProc.data.concat(downSampledData);
+      this.data = this.data.concat(downSampledData);
     }
   }
 
