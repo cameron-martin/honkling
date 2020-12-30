@@ -1,10 +1,10 @@
-var offlineProc;
 // TODO :: stream of input is supported generating multiple processor,
 // each async response should be able to fine the caller offline processor.
 
-class OfflineAudioProcessor {
+import { transposeFlatten2d } from './util';
+
+export default class OfflineAudioProcessor {
   constructor(config, audioData) {
-    offlineProc = this;
     this.config = config;
     this.audioData = audioData;
 
@@ -45,8 +45,8 @@ class OfflineAudioProcessor {
   }
 
   initMeydaNode() {
-    let postProcessing = function(mfcc) {
-      offlineProc.mfcc.push(mfcc);
+    let postProcessing = (mfcc) => {
+      this.mfcc.push(mfcc);
     }
 
     var meydaHopSize = this.config.offlineSampleRate / 1000 * this.config.offlineHopSize;
@@ -65,22 +65,22 @@ class OfflineAudioProcessor {
     this.meyda.start("mfcc");
     this.audioSource.start();
 
-    this.audioContext.startRendering().then(function(renderedBuffer) {
-      offlineProc.meyda.stop();
-      offlineProc.audioSource.disconnect();
-      offlineProc.mfcc = offlineProc.mfcc.slice(0, offlineProc.mfccDataLength);
-      if (offlineProc.mfcc.length < offlineProc.mfccDataLength) {
-        while (offlineProc.mfcc.length != offlineProc.mfccDataLength) {
-          offlineProc.mfcc.push(new Array(40).fill(0));
+    this.audioContext.startRendering().then((renderedBuffer) => {
+      this.meyda.stop();
+      this.audioSource.disconnect();
+      this.mfcc = this.mfcc.slice(0, this.mfccDataLength);
+      if (this.mfcc.length < this.mfccDataLength) {
+        while (this.mfcc.length != this.mfccDataLength) {
+          this.mfcc.push(new Array(40).fill(0));
         }
       }
-      offlineProc.mfcc = transposeFlatten2d(offlineProc.mfcc);
-      offlineProc.deferred.resolve(offlineProc.mfcc);
+      this.mfcc = transposeFlatten2d(this.mfcc);
+      this.deferred.resolve(this.mfcc);
 
-    }).catch(function(err) {
+    }).catch((err) => {
       console.log('Offline processing failed: ' + err);
       // Note: The promise should reject when startRendering is called a second time on an OfflineAudioContext
-      offlineProc.deferred.reject();
+      this.deferred.reject();
     });
 
     return this.deferred.promise();

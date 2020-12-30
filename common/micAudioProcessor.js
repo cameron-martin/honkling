@@ -1,6 +1,8 @@
+import { audioConfig } from './config';
+
 let micProc;
 
-class MicAudioProcessor {
+export default class MicAudioProcessor {
   constructor(mediaStream) {
     this.mediaStream = mediaStream;
     micProc = this;

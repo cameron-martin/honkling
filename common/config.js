@@ -1,12 +1,12 @@
 const serverURL = 'https://honkling.xyz:443';
 // const serverURL = 'http://localhost:8080';
 
-const commands = ["silence", "unknown", "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"];
+export const commands = ["silence", "unknown", "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"];
 
-const predictionFrequency = 350; // ms between mic audio prediction
-const predictionThreshold = 0.85;
+export const predictionFrequency = 350; // ms between mic audio prediction
+export const predictionThreshold = 0.85;
 
-const audioConfig = {
+export const audioConfig = {
 	'offlineSampleRate' : 16000,
 	'offlineHopSize' : 10, // in ms
 	'offlineWindowSize' : 30, // in ms
@@ -14,7 +14,7 @@ const audioConfig = {
 	'noiseThreshold' : 0.050
 }
 
-const personalizationConfig = {
+export const personalizationConfig = {
 	epochs : 50,
 	validationSplit : 0,
 	shuffle: true,
@@ -22,9 +22,7 @@ const personalizationConfig = {
 	learningRate : 0.01
 }
 
-weights = {}; // placeholder for dynamic weights loading
-
-const modelConfig = {
+export const modelConfig = {
 	2048 : {
 		input_shape : [40, 101, 1],
 		n_layers : 6,

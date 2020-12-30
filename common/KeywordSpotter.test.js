@@ -1,3 +1,5 @@
+import KeywordSpotter from './KeywordSpotter';
+
 function sleep(timeMs) {
     return new Promise((resolve) => setTimeout(resolve, timeMs))
 }
@@ -25,15 +27,19 @@ describe('KeywordSpotter', () => {
         const callback = jasmine.createSpy();
     
         spotter.onkeyword = callback;
-    
-        await spotter.predict();
+        try {
+            await sleep(100);
+            await spotter.predict();
+            
+            await sleep(100);
+            audioElement.play();
         
-        await sleep(100);
-        audioElement.play();
-    
-        await sleep(1200);
-    
-        expect(callback.calls.all().map(call => call.args[0])).toEqual(['unknown', 'unknown', 'off']);
+            await sleep(1200);
+        
+            expect(callback.calls.all().map(call => call.args[0])).toEqual(['unknown', 'unknown', 'off']);
+        } finally {
+            spotter.stop();
+        }
     });
 });
 

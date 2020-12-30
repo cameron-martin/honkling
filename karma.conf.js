@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'webpack'],
 
 
     // list of files / patterns to load in the browser
@@ -18,10 +18,10 @@ module.exports = function(config) {
       'lib/tfjs/tf.min.js',
       'lib/jquery-3.3.1.min.js',
       'lib/meyda.js',
-      './**/*.test.js',
-      'common/**/*',
+      { pattern: './**/*.test.js', watch: false },
+      'common/initWeights.js',
       'models/honkling/*.js',
-      {pattern: 'honkling-node/test/*.wav', watched: false, included: false, served: true, nocache: false}
+      { pattern: 'honkling-node/test/*.wav', watched: false, included: false, served: true, nocache: false }
     ],
 
 
@@ -34,6 +34,11 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      './**/*.test.js': [ 'webpack' ],
+    },
+  
+    webpack: {
+      // Any custom webpack configuration...
     },
 
 

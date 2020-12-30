@@ -1,3 +1,5 @@
+import { predictionThreshold } from './config';
+
 function isNumeric(str) {
   return !isNaN(str)
 }
@@ -102,7 +104,7 @@ function percentile(arr, p) {
   return arr[lower] * (1 - weight) + arr[upper] * weight;
 }
 
-function transpose2d(arr) {
+export function transpose2d(arr) {
   let row = arr.length;
   let col = arr[0].length;
 
@@ -133,7 +135,7 @@ function flatten2d(arr) {
   return flattened;
 }
 
-function transposeFlatten2d(arr) {
+export function transposeFlatten2d(arr) {
   let row = arr.length;
   let col = arr[0].length;
 
@@ -160,7 +162,7 @@ function calculateAccuracy(output, target) {
   return correct/output.length;
 }
 
-function predictKeyword(x, model, commands) {
+export function predictKeyword(x, model, commands) {
   let output = model.predict(x);
 
   let index = commands.indexOf("unknown");

@@ -1,4 +1,7 @@
-class SpeechResModel {
+import { modelConfig, personalizationConfig } from './config';
+import { transpose2d } from './util';
+
+export default class SpeechResModel {
 
 	constructor(modelName, commands) {
 		this.modelName = modelName;
